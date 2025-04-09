@@ -15,18 +15,33 @@ namespace EventManagmentAPI.Controllers
             _context = context;
         }
 
-        // POST: api/Participant
         [HttpPost]
-        public async Task<IActionResult> CreateParticipant([FromBody] Participant participant)
+        public async Task<IActionResult> CreateParticipant([FromBody] CreateParticipantDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+        
+            var participant = new Participant
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                Company = dto.Company,
+                JobTitle = dto.JobTitle,
+                EventParticipants = dto.EventParticipants?.Select(ep => new EventParticipant
+                {
+                    EventId = ep.EventId,
+                    RegistrationDate = ep.RegistrationDate,
+                    AttendanceStatus = ep.AttendanceStatus
+                }).ToList()
+            };
 
-            _context.Participants.Add(participant);
-            await _context.SaveChangesAsync();
+    _context.Participants.Add(participant);
+    await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetParticipant), new { id = participant.Id }, participant);
-        }
+    return CreatedAtAction(nameof(GetParticipant), new { id = participant.Id }, participant);
+}
+
 
         // GET: api/Participant/5
         [HttpGet("{id}")]

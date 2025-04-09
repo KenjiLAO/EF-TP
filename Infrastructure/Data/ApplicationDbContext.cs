@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext {
     public DbSet<Session> Sessions { get; set; }
     public DbSet<SessionSpeaker> SessionSpeakers { get; set; }
     public DbSet<Speaker> Speakers { get; set; }
+    public DbSet<Room> Rooms { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

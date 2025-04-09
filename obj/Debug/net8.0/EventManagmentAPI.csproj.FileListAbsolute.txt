@@ -145,3 +145,4 @@ C:\Users\theye\Documents\EventManagmentAPI\obj\Debug\net8.0\refint\EventManagmen
 C:\Users\theye\Documents\EventManagmentAPI\obj\Debug\net8.0\EventManagmentAPI.pdb
 C:\Users\theye\Documents\EventManagmentAPI\obj\Debug\net8.0\EventManagmentAPI.genruntimeconfig.cache
 C:\Users\theye\Documents\EventManagmentAPI\obj\Debug\net8.0\ref\EventManagmentAPI.dll
+C:\Users\theye\Documents\EventManagmentAPI\obj\Debug\net8.0\EventManagmentAPI.sourcelink.json
