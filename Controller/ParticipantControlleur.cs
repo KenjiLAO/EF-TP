@@ -15,32 +15,36 @@ namespace EventManagmentAPI.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateParticipant([FromBody] CreateParticipantDto dto)
+        [HttpPost("create/{firstName}/{lastName}/{email}")]
+        public async Task<IActionResult> CreateParticipant(string firstName, string lastName, string email, string company = null, string jobTitle = null)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var participant = new Participant
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(email))
             {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-                Company = dto.Company,
-                JobTitle = dto.JobTitle,
-                EventParticipants = dto.EventParticipants?.Select(ep => new EventParticipant
-                {
-                    EventId = ep.EventId,
-                    RegistrationDate = ep.RegistrationDate,
-                    AttendanceStatus = ep.AttendanceStatus
-                }).ToList()
-            };
-
-            _context.Participants.Add(participant);
-            await _context.SaveChangesAsync();
+                return BadRequest("FirstName, LastName, and Email are required.");
+            }
         
-            return CreatedAtAction(nameof(GetParticipant), new { id = participant.Id }, participant);
+            try
+            {
+                var participant = new Participant
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    Company = company,
+                    JobTitle = jobTitle
+                };
+        
+                _context.Participants.Add(participant);
+                await _context.SaveChangesAsync();
+        
+                return CreatedAtAction(nameof(GetParticipant), new { id = participant.Id }, participant);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
 
 
         // GET: api/Participant/5
