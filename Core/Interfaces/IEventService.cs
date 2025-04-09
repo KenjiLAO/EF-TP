@@ -9,5 +9,16 @@ namespace EventManagment.Application.Interfaces
         Task<Event> CreateEventAsync(Event eventItem);
         Task<Event> UpdateEventAsync(Event eventItem);
         Task DeleteEventAsync(int id);
+
+        Task<IEnumerable<Event>> GetFilteredEventsAsync(
+            DateTime? startDate,
+            DateTime? endDate,
+            int? location,
+            int? category,
+            string status,
+            int page,
+            int pageSize);
+
+        Task<IEnumerable<string>> GetCategoriesAsync();
     }
 }

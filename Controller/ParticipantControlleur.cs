@@ -20,7 +20,7 @@ namespace EventManagmentAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-        
+
             var participant = new Participant
             {
                 FirstName = dto.FirstName,
@@ -36,11 +36,11 @@ namespace EventManagmentAPI.Controllers
                 }).ToList()
             };
 
-    _context.Participants.Add(participant);
-    await _context.SaveChangesAsync();
-
-    return CreatedAtAction(nameof(GetParticipant), new { id = participant.Id }, participant);
-}
+            _context.Participants.Add(participant);
+            await _context.SaveChangesAsync();
+        
+            return CreatedAtAction(nameof(GetParticipant), new { id = participant.Id }, participant);
+        }
 
 
         // GET: api/Participant/5
