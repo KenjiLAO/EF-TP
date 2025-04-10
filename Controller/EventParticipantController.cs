@@ -60,23 +60,48 @@ namespace EventManagment.Controllers
         [HttpGet("events/{eventId}/participants")]
         public async Task<IActionResult> GetParticipantsForEvent(int eventId)
         {
+            // Récupère les participants de l'événement
             var participants = await _context.EventParticipants
                 .Where(ep => ep.EventId == eventId)
-                .Include(ep => ep.Participant) // Pour récupérer les infos du participant
+                .Include(ep => ep.Participant)
                 .ToListAsync();
-        
+
             if (!participants.Any())
                 return NotFound(new { message = "Aucun participant trouvé pour cet événement." });
-        
-            // Projection pour ne récupérer que l'ID et le nom
+
+            // Projection pour ne récupérer que l'ID et le nom des participants
             var participantDtos = participants.Select(ep => new ParticipantDto
             {
                 Id = ep.Participant.Id,
                 FirstName = ep.Participant.FirstName,
                 LastName = ep.Participant.LastName
             }).ToList();
-        
+
+            // Retourner la liste des participants sous forme de JSON
             return Ok(participantDtos);
+        }
+
+        [HttpGet("participants/{participantId}/events")]
+        public async Task<IActionResult> GetEventHistoryForParticipant(int participantId)
+        {
+            // Récupérer tous les événements auxquels le participant a été inscrit
+            var events = await _context.EventParticipants
+                .Where(ep => ep.ParticipantId == participantId) // Filtre par participant
+                .Include(ep => ep.Event) // Inclut les informations de l'événement
+                .Select(ep => new EventHistoryDto
+                {
+                    EventId = ep.Event.Id,
+                    EventName = ep.Event.Title,
+                    EventDate = ep.Event.StartDate,
+                    RegistrationDate = ep.RegistrationDate ?? DateTime.MinValue,
+                    AttendanceStatus = ep.AttendanceStatus
+                })
+                .ToListAsync();
+
+            if (!events.Any())
+                return NotFound(new { message = "Aucun événement trouvé pour ce participant." });
+
+            return Ok(events);
         }
 
     }
