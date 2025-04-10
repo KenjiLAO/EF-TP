@@ -1,8 +1,8 @@
+using Microsoft.OpenApi.Models; // Ajouter ce using
 using EventManagment.Application.Services;
 using EventManagment.Infrastructure.Repositories;
 using EventManagment.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using EventManagment.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +32,7 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ParticipantService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 var app = builder.Build();
 
@@ -39,16 +40,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Event Management API v1");
+    });
 }
 
 using (var scope = app.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            db.Database.Migrate();
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 
-            DataSeeder.Seed(db);
-        }
+    DataSeeder.Seed(db);
+}
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
