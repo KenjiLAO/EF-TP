@@ -58,5 +58,21 @@ namespace EventManagmentAPI.Controllers
 
             return Ok(participant);
         }
+    
+        // DELETE: api/participants/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteParticipant(int id)
+        {
+            var participant = await _context.Participants.FindAsync(id);
+            if (participant == null)
+            {
+                return NotFound(new { message = "Participant non trouvé." });
+            }
+    
+            _context.Participants.Remove(participant);
+            await _context.SaveChangesAsync();
+    
+            return Ok(new { message = "Participant supprimé avec succès." });
+        }
     }
 }
