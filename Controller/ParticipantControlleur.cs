@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EventManagment.Models;
 using EventManagment.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventManagmentAPI.Controllers
 {
@@ -73,6 +74,35 @@ namespace EventManagmentAPI.Controllers
             await _context.SaveChangesAsync();
     
             return Ok(new { message = "Participant supprimé avec succès." });
+        }
+
+        // PUT: api/Participant/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateParticipant(int id, string firstName, string lastName, string email, string company = null, string jobTitle = null)
+        {
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(email))
+            {
+                return BadRequest("FirstName, LastName, and Email are required.");
+            }
+        
+            var participant = await _context.Participants.FindAsync(id);
+        
+            if (participant == null)
+            {
+                return NotFound();
+            }
+        
+            // Mise à jour des informations
+            participant.FirstName = firstName;
+            participant.LastName = lastName;
+            participant.Email = email;
+            participant.Company = company;
+            participant.JobTitle = jobTitle;
+        
+            _context.Entry(participant).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        
+            return NoContent(); // 204 No Content, signifie que la mise à jour a réussi sans renvoyer de données.
         }
     }
 }

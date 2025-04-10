@@ -1,8 +1,6 @@
 using EventManagment.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace EventManagment.Controllers
 {
